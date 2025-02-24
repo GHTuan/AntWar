@@ -76,6 +76,7 @@ void Game::objectInit() {
 
     SoundManager::GetInstance()->AddSound("ball_bounce", "Assets/SFX/ball_bounce.mp3", 128);
     SoundManager::GetInstance()->AddSound("ball_kick", "Assets/SFX/ball_kick.mp3", 128);
+    SoundManager::GetInstance()->AddSound("flash", "Assets/SFX/flash.mp3", 128);
 
     SoundManager::GetInstance()->AddSound("Game_Over", "Assets/SFX/gameover.mp3", 128);
     SoundManager::GetInstance()->AddSound("Goal", "Assets/SFX/score.mp3", 64);
@@ -344,10 +345,18 @@ void Game::objectInit() {
             player6->AddComponent(new KickControl(player6, ball, SDLK_KP_ENTER, HIGH_KICK_FORCE));
         }
 
+        //Flash function: player1 uses 'z', player2 uses 'm'
+        player1->AddComponent(new FlashControl(player1, 100.0f, SDLK_z)); 
+        player2->AddComponent(new FlashControl(player2, 100.0f, SDLK_z));
+        player3->AddComponent(new FlashControl(player3, 100.0f, SDLK_z));
+        player4->AddComponent(new FlashControl(player4, 100.0f, Player2Mode ? SDLK_m : SDLK_z)); 
+        player5->AddComponent(new FlashControl(player5, 100.0f, Player2Mode ? SDLK_m : SDLK_z));
+        player6->AddComponent(new FlashControl(player6, 100.0f, Player2Mode ? SDLK_m : SDLK_z));
+        
         player1->AddComponent(new AIGoalKeeper(player1, ball, GoalKeeperSpeed, true));
         player2->AddComponent(new AIDefender(player2, ball, DefenderSpeed, true));
         player3->AddComponent(new AIAttacker(player3, ball, AttackerSpeed, true));
-
+        
         player4->AddComponent(new AIAttacker(player4, ball, AttackerSpeed, false));
         player5->AddComponent(new AIDefender(player5, ball, DefenderSpeed, false));
         player6->AddComponent(new AIGoalKeeper(player6, ball, GoalKeeperSpeed, false));

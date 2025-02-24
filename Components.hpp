@@ -661,4 +661,74 @@ public:
     }
 };
 
+class FlashControl : public Component {
+    private:
+        Rigidbody2D *rigidbody = nullptr;
+        MovementController *movementController = nullptr;
+        SDL_Keycode flashKey = SDLK_z; // Flash triggered by 'z' key
+        float flashDistance = 100.0f;  // Distance to flash (adjustable)
+        float cooldownDuration = 2000.0f; // 2 seconds in milliseconds
+        Uint32 lastFlashTime = 0; // Time of last flash
+    
+    public:
+        FlashControl(GameObject *parent, float flashDistance = 100.0f, SDL_Keycode flashKey = SDLK_z) 
+            : Component(parent) {
+            this->flashDistance = flashDistance;
+            this->flashKey = flashKey;
+            rigidbody = gameObject->GetComponent<Rigidbody2D>();
+            movementController = gameObject->GetComponent<MovementController>();
+        }
+    
+        void Update() override {
+            if (!rigidbody || !movementController) {
+                rigidbody = gameObject->GetComponent<Rigidbody2D>();
+                movementController = gameObject->GetComponent<MovementController>();
+                if (!rigidbody || !movementController) return;
+            }
+    
+            if (!movementController->GetEnabled()) return;
+    
+            Uint32 currentTime = SDL_GetTicks();
+            if (Game::event.type == SDL_KEYDOWN && Game::event.key.keysym.sym == flashKey) {
+                // Check if cooldown has elapsed
+                if (currentTime - lastFlashTime >= cooldownDuration) {
+                    Flash();
+                    lastFlashTime = currentTime; // Reset cooldown
+                }
+            }
+        }
+    
+        void Flash() {
+            // flash direction: velocity or last known direction
+            Vector2 flashDirection = rigidbody->velocity.Magnitude() > 0.1f 
+                ? rigidbody->velocity.Normalize() 
+                : Vector2(1, 0); 
+    
+            // new position
+            Vector2 newPosition = gameObject->transform.position + flashDirection * flashDistance;
+    
+            // new position stays in bounds
+            if (newPosition.x < 0) newPosition.x = 0;
+            if (newPosition.x > WIDTH) newPosition.x = WIDTH;
+            if (newPosition.y < 0) newPosition.y = 0;
+            if (newPosition.y > HEIGHT) newPosition.y = HEIGHT;
+    
+            // Apply the flash (teleport)
+            gameObject->transform.position = newPosition;
+    
+            // Optionally, reset velocity to avoid momentum carrying over
+            rigidbody->velocity = Vector2(0, 0);
+    
+            // Play a sound effect (optional)
+            SoundManager::GetInstance()->PlaySound("flash");
+        }
+    
+        void Draw() override {}
+    
+        Component *Clone(GameObject *parent) override {
+            FlashControl *newFlashControl = new FlashControl(parent, flashDistance, flashKey);
+            return newFlashControl;
+        }
+    };
+
 #endif
