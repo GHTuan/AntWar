@@ -5,6 +5,7 @@
 #include "Helper.hpp"
 #include "Physic2D.hpp"
 #include "SDLCustomEvent.hpp"
+#include "Sound.hpp"
 
 #include <cmath>
 #include <iostream>

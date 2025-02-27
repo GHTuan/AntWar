@@ -4,8 +4,10 @@
 #include "Global.hpp"
 #include "CustomClasses.hpp"
 #include "Physic2D.hpp"
+#include "Sound.hpp"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
+
 
 
 // Player cosmetics

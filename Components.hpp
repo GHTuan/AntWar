@@ -5,7 +5,10 @@
 #include "Game.hpp"
 #include "Helper.hpp"
 #include "Physic2D.hpp"
+#include "Sound.hpp"
+
 #include "cmath"
+
 
 class BallStateMachine : public Component {
 private:
@@ -17,16 +20,16 @@ private:
 
     float lastKickedTime = 0;
 
-    GameObject *lastBindedBy = nullptr;
-    Vector2 lastBindedVelocity = Vector2(0, 0);
+    GameObject *lastBindedBy = nullptr;             //Check binded
+    Vector2 lastBindedVelocity = Vector2(0, 0);     //Check binded
 
-    float bindCooldown = 0;
-    float lastBindTime = 0;
+    float bindCooldown = 0;                         //Check binded
+    float lastBindTime = 0;                         //Check binded
 
 public:
     enum State {
         FREE,
-        BINDED,
+        BINDED,                                     //Check binded
         KICKED
     };
 
@@ -277,7 +280,7 @@ public:
     }
 
     void RemoveMovementController(int keyBind) {
-        movementControllers[keyBind] = nullptr;
+        movementControllers.erase(keyBind);
 
         // Enable the first controller when removing
         if (movementControllers.find(keyBind) != movementControllers.end()) {
