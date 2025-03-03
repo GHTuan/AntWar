@@ -3,15 +3,17 @@
 
 #include "CustomClasses.hpp"
 #include "Global.hpp"
+#include "Vector2.hpp"
 
 
 class Rigidbody2D : public Component {
 private:
-    Vector2 acceleration;
+    // Vector2 acceleration;
     float mass, drag, bounciness;
 
 public:
     Vector2 velocity;
+    Vector2 acceleration;
 
     Rigidbody2D(GameObject *parent, float mass, float drag, float bounciness);
     ~Rigidbody2D();

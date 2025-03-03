@@ -6,6 +6,8 @@
 #include "Physic2D.hpp"
 #include "SDLCustomEvent.hpp"
 #include "Sound.hpp"
+#include "Vector2.hpp"
+#include "AIController.cpp"
 
 #include <cmath>
 #include <iostream>
@@ -240,9 +242,9 @@ void Game::objectInit() {
 #pragma region Background Setup
         GameObject *background = new GameObject("Background");
         background->transform.position = Vector2(640, 360);
-        background->transform.scale = Vector2(1, 1);
+        background->transform.scale = Vector2(0.128, 0.0960128017068943);
 
-        background->AddComponent(new SpriteRenderer(background, Vector2(1280, 720), -10, LoadSpriteSheet("Assets/Sprites/yard.png")));
+        background->AddComponent(new SpriteRenderer(background, Vector2(10000, 7499), -10, LoadSpriteSheet("Assets/Sprite(new)/yard.png")));
 
         GameObjectManager::GetInstance()->AddGameObject(background);
 #pragma endregion
@@ -395,13 +397,13 @@ void Game::objectInit() {
 
 #pragma region Goal Setup
         GameObject *goal1 = new GameObject("Goal1");
-        goal1->transform.position = Vector2(30, 360);
-        goal1->transform.scale = Vector2(5, 4);
+        goal1->transform.position = Vector2(90, 360);
+        goal1->transform.scale = Vector2(1.5, 0.8);
         goal1->tag = 5;
 
-        goal1->AddComponent(new SpriteRenderer(goal1, Vector2(16, 53), 0, LoadSpriteSheet("Assets/Sprites/goal.png")));
+        goal1->AddComponent(new SpriteRenderer(goal1, Vector2(72, 200), 0, LoadSpriteSheet("Assets/Sprite(new)/goal0.png")));
         goal1->AddComponent(new BoxCollider2D(goal1, Vector2(0, 0), 
-            Vector2(16 * goal1->transform.scale.x, 53 * goal1->transform.scale.y)
+            Vector2(72 * goal1->transform.scale.x, 200 * goal1->transform.scale.y)
         ));
 
         goal1->GetComponent<BoxCollider2D>()->OnCollisionEnter.addHandler(
@@ -426,15 +428,16 @@ void Game::objectInit() {
         GameObjectManager::GetInstance()->AddGameObject(goal1);
 
         GameObject *goal2 = new GameObject("Goal2");
-        goal2->transform.position = Vector2(1250, 360);
+        goal2->transform.position = Vector2(1190, 360);
         goal2->transform.rotation = 180;
-        goal2->transform.scale = Vector2(5, 4);
+        goal2->transform.scale = Vector2(1.5, 0.8);
         goal2->tag = 6;
 
-        goal2->AddComponent(new SpriteRenderer(goal2, Vector2(16, 53), 0, LoadSpriteSheet("Assets/Sprites/goal.png")));
+        goal2->AddComponent(new SpriteRenderer(goal2, Vector2(72, 200), 0, LoadSpriteSheet("Assets/Sprite(new)/goal0.png")));
         goal2->AddComponent(new BoxCollider2D(goal2, Vector2(0, 0), 
-            Vector2(16 * goal2->transform.scale.x, 53 * goal2->transform.scale.y)
+            Vector2(72 * goal2->transform.scale.x, 200 * goal2->transform.scale.y)
         ));
+        goal2->transform.position = Vector2(1190, 360);
 
         goal2->GetComponent<BoxCollider2D>()->OnCollisionEnter.addHandler(
             [goal2, this](Collider2D *collider) {

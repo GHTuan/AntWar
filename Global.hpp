@@ -13,12 +13,14 @@
 #include <SDL2/SDL.h>
 #include <vector>
 
-extern SDL_Renderer* RENDERER;
+extern SDL_Renderer *RENDERER;
 extern std::vector<SDL_Texture *> TEXTURES;
 
-//SETTINGS
+// SETTINGS
 const int FPS = 60;
 const int WIDTH = 1280, HEIGHT = 720;
+const int MIN_WIDTH_YARD = 160, MIN_HEIGHT_YARD = 100;
+const int MAX_WIDTH_YARD = 1120, MAX_HEIGHT_YARD = 620;
 // const int WIDTH = 1920, HEIGHT = 1080;
 const bool FULLSCREEN = false;
 

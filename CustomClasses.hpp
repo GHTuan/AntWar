@@ -10,6 +10,7 @@
 
 #include <SDL2/SDL.h>
 
+#include "Vector2.hpp"
 
 class GameObject;
 
@@ -59,34 +60,7 @@ private:
     std::vector<Handler> handlers;
 };
 
-class Vector2 {
-public:
-    float x, y;
-    Vector2();
-    Vector2(float x, float y);
-    bool operator==(Vector2 v);
-    Vector2 operator+(Vector2 v);
-    Vector2 operator-(Vector2 v);
-    Vector2 operator*(float f);
-    float operator*(Vector2 v);
-    Vector2 operator/(float f);
-    Vector2 operator+=(Vector2 v);
 
-    float Magnitude();
-    Vector2 Normalize();
-    float Distance(Vector2 v);
-    static float Distance(Vector2 v1, Vector2 v2);
-    float Dot(Vector2 v);
-    static float Dot(Vector2 v1, Vector2 v2);
-    float Cross(Vector2 v);
-    static float Cross(Vector2 v1, Vector2 v2);
-
-    static float Angle(Vector2 v1, Vector2 v2);
-
-    static float SignedAngle(Vector2 v1, Vector2 v2);
-};
-
-Vector2 operator*(float f, Vector2 v);
 
 /*Singleton manager for GameObjects, automatic memory management
  */
@@ -246,7 +220,13 @@ T *GameObject::GetComponent() {
 }
 
 // More like a template for the GameObjectManager
-class Scene {
+
+
+// Wrapper for all, including GameObjectManager
+// Singleton
+
+class Scene
+{
 private:
     std::string name;
 
@@ -263,10 +243,8 @@ public:
 
     std::string GetName();
 };
-
-// Wrapper for all, including GameObjectManager
-// Singleton
-class SceneManager {
+class SceneManager
+{
 private:
     Scene *currentScene;
     SceneManager();
@@ -291,7 +269,6 @@ public:
     void Update();
     void Draw();
 };
-
 
 
 #endif
