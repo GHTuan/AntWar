@@ -83,7 +83,7 @@ void Game::menuSetup()
             Sound::GetInstance()->PlayMusic("MenuBgm");
 
             CreateGameObject("Background", Vector2(640, 360), Vector2(1, 1), 
-                             "Assets/Sprites/UI/Menubg.jpg", Vector2(2560, 1707), -10);
+                             "Assets/Sprites/UI/Menubg.png", Vector2(2560, 1707), -10);
 
             GameObject *title = CreateGameObject("Title", Vector2(640, 200), Vector2(10, 10), 
                                                  "Assets/Sprites/UI/Game_Name.png", Vector2(64, 16), 0);
@@ -507,10 +507,10 @@ void Game::render()
     {
         SDL_Color textColor = {0, 0, 0, 255};
         std::string scoreText = std::to_string(scoreTeam1) + " - " + std::to_string(scoreTeam2);
-        SDL_Texture *scoreTexture = LoadFontTexture(scoreText, "Assets/Fonts/arial.ttf", textColor, 50);
+        SDL_Texture *scoreTexture = LoadFontTexture(scoreText, "Assets/Fonts/arial.ttf", textColor, 80);
         if (scoreTexture)
         {
-            RenderTexture(scoreTexture, 640, 20);
+            RenderTexture(scoreTexture, 640, 40);
             SDL_DestroyTexture(scoreTexture);
         }
         else
