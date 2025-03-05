@@ -255,11 +255,11 @@ void Game::gameSetup()
 
                                if (Player2Mode)
                                {
-                                   player10->AddComponent(new MovementController(player10, GoalKeeperSpeed, true));
-                                   player9->AddComponent(new MovementController(player9, DefenderSpeed, true));
-                                   player8->AddComponent(new MovementController(player8, DefenderSpeed, true));
-                                   player7->AddComponent(new MovementController(player7, AttackerSpeed, true));
-                                   player6->AddComponent(new MovementController(player6, AttackerSpeed, true));
+                                   player10->AddComponent(new MovementController(player10, GoalKeeperSpeed, false));
+                                   player9->AddComponent(new MovementController(player9, DefenderSpeed, false));
+                                   player8->AddComponent(new MovementController(player8, DefenderSpeed, false));
+                                   player7->AddComponent(new MovementController(player7, AttackerSpeed, false));
+                                   player6->AddComponent(new MovementController(player6, AttackerSpeed, false));
                                }
 
                                player1->AddComponent(new KickControl(player1, ball, SDLK_SPACE, HIGH_KICK_FORCE));
@@ -292,11 +292,12 @@ void Game::gameSetup()
                                GameObject *controllerSwitcher1 = new GameObject("ControllerSwitcher1");
                                TeamControl *movementControllerSwitcher1 = dynamic_cast<TeamControl *>(controllerSwitcher1->AddComponent(
                                    new TeamControl(controllerSwitcher1, LoadSpriteSheet("Assets/blue_indicator.png"), 75.0)));
-                               movementControllerSwitcher1->AddMovementController(SDLK_1, player1->GetComponent<MovementController>());
-                               movementControllerSwitcher1->AddMovementController(SDLK_2, player2->GetComponent<MovementController>());
-                               movementControllerSwitcher1->AddMovementController(SDLK_3, player3->GetComponent<MovementController>());
-                               movementControllerSwitcher1->AddMovementController(SDLK_4, player4->GetComponent<MovementController>());
-                               movementControllerSwitcher1->AddMovementController(SDLK_5, player5->GetComponent<MovementController>());
+                                movementControllerSwitcher1->AddMovementController(SDLK_5, player5->GetComponent<MovementController>());
+                                movementControllerSwitcher1->AddMovementController(SDLK_1, player1->GetComponent<MovementController>());
+                                movementControllerSwitcher1->AddMovementController(SDLK_2, player2->GetComponent<MovementController>());
+                                movementControllerSwitcher1->AddMovementController(SDLK_3, player3->GetComponent<MovementController>());
+                                movementControllerSwitcher1->AddMovementController(SDLK_4, player4->GetComponent<MovementController>());
+
                                GameObjectManager::GetInstance()->AddGameObject(controllerSwitcher1);
 
                                if (Player2Mode || TestMode)
@@ -304,11 +305,11 @@ void Game::gameSetup()
                                    GameObject *controllerSwitcher2 = new GameObject("ControllerSwitcher2");
                                    TeamControl *movementControllerSwitcher2 = dynamic_cast<TeamControl *>(controllerSwitcher2->AddComponent(
                                        new TeamControl(controllerSwitcher2, LoadSpriteSheet("Assets/red_indicator.png"), 75.0)));
-                                   movementControllerSwitcher2->AddMovementController(SDLK_KP_6, player6->GetComponent<MovementController>());
-                                   movementControllerSwitcher2->AddMovementController(SDLK_KP_7, player7->GetComponent<MovementController>());
-                                   movementControllerSwitcher2->AddMovementController(SDLK_KP_8, player8->GetComponent<MovementController>());
-                                   movementControllerSwitcher2->AddMovementController(SDLK_KP_9, player9->GetComponent<MovementController>());
-                                   movementControllerSwitcher2->AddMovementController(SDLK_KP_0, player10->GetComponent<MovementController>());
+                                   movementControllerSwitcher2->AddMovementController(SDLK_6, player6->GetComponent<MovementController>());
+                                   movementControllerSwitcher2->AddMovementController(SDLK_7, player7->GetComponent<MovementController>());
+                                   movementControllerSwitcher2->AddMovementController(SDLK_8, player8->GetComponent<MovementController>());
+                                   movementControllerSwitcher2->AddMovementController(SDLK_9, player9->GetComponent<MovementController>());
+                                   movementControllerSwitcher2->AddMovementController(SDLK_0, player10->GetComponent<MovementController>());
                                    GameObjectManager::GetInstance()->AddGameObject(controllerSwitcher2);
                                }
 
@@ -465,7 +466,7 @@ void Game::handleEvents()
     }
 
     // End condition
-    if (scoreTeam1 == 5  or scoreTeam2 == 5)
+    if (scoreTeam1 == 5 or scoreTeam2 == 5)
     {
         state = GAMEOVER;
         return;
