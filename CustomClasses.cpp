@@ -67,6 +67,16 @@ GameObject *GameObjectManager::GetGameObject(std::string name) {
     return nullptr;
 }
 
+std::vector<GameObject *> GameObjectManager::GetGameObjectsByTag(int tag) {
+    std::vector<GameObject *> filteredObjects;
+    for (auto &pair : gameObjects) {
+        if (pair.second->tag == tag) {
+            filteredObjects.push_back(pair.second);
+        }
+    }
+    return filteredObjects;
+}
+
 void GameObjectManager::Clear() {
     for (auto &pair : gameObjects) {
         delete pair.second;

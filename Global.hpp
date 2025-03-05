@@ -19,8 +19,8 @@ extern std::vector<SDL_Texture *> TEXTURES;
 // SETTINGS
 const int FPS = 60;
 const int WIDTH = 1280, HEIGHT = 720;
-const int MIN_WIDTH_YARD = 160, MIN_HEIGHT_YARD = 100;
-const int MAX_WIDTH_YARD = 1120, MAX_HEIGHT_YARD = 620;
+const int MIN_WIDTH_YARD = 155, MIN_HEIGHT_YARD = 95;
+const int MAX_WIDTH_YARD = 1125, MAX_HEIGHT_YARD = 625;
 // const int WIDTH = 1920, HEIGHT = 1080;
 const bool FULLSCREEN = false;
 

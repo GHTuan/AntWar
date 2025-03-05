@@ -16,19 +16,23 @@ class GameObject;
 
 // Event
 template <typename... Args>
-class Event {
+class Event
+{
 public:
     using Handler = std::function<void(Args...)>;
 
     Event() {}
     ~Event() { handlers.clear(); }
 
-    void addHandler(Handler handler) {
+    void addHandler(Handler handler)
+    {
         handlers.push_back(handler);
     }
 
-    void raise(Args... args) {
-        for (auto &handler : handlers) {
+    void raise(Args... args)
+    {
+        for (auto &handler : handlers)
+        {
             handler(std::forward<Args>(args)...);
         }
     }
@@ -39,19 +43,23 @@ private:
 
 // Specialization for no arguments
 template <>
-class Event<> {
+class Event<>
+{
 public:
     using Handler = std::function<void()>;
 
     Event() {}
     ~Event() { handlers.clear(); }
 
-    void addHandler(Handler handler) {
+    void addHandler(Handler handler)
+    {
         handlers.push_back(handler);
     }
 
-    void raise() {
-        for (auto &handler : handlers) {
+    void raise()
+    {
+        for (auto &handler : handlers)
+        {
             handler();
         }
     }
@@ -60,17 +68,16 @@ private:
     std::vector<Handler> handlers;
 };
 
-
-
 /*Singleton manager for GameObjects, automatic memory management
  */
-class GameObjectManager {
+class GameObjectManager
+{
 private:
     std::map<std::string, GameObject *> gameObjects;
     GameObjectManager();
     static GameObjectManager *instance;
-public:
 
+public:
     ~GameObjectManager();
 
     static GameObjectManager *GetInstance();
@@ -78,17 +85,18 @@ public:
     void AddGameObject(GameObject *gameObject);
     void RemoveGameObject(std::string name);
     GameObject *GetGameObject(std::string name);
+    std::vector<GameObject *> GetGameObjectsByTag(int tag);
     void Clear();
 
     void Update();
     void Draw();
-
 };
 
-class Component {
+class Component
+{
 public:
     bool enabled = true;
-    
+
     GameObject *gameObject = nullptr;
     Component(GameObject *parent);
     virtual ~Component();
@@ -99,7 +107,8 @@ public:
 
 SDL_Texture *LoadSpriteSheet(std::string path);
 
-class SpriteRenderer : public Component {
+class SpriteRenderer : public Component
+{
 private:
     int drawOrder = 0;
 
@@ -118,9 +127,14 @@ public:
     Component *Clone(GameObject *parent);
 
     int GetDrawOrder();
+    void SetTexture(SDL_Texture *newTexture)
+    {
+        spriteSheet = newTexture;
+    }
 };
 
-class AnimationClip {
+class AnimationClip
+{
 private:
     SDL_Texture *spriteSheet;
     SDL_Rect currentSpriteRect;
@@ -152,7 +166,8 @@ public:
     std::pair<SDL_Texture *, SDL_Rect> GetCurrentSpriteInfo();
 };
 
-class Animator : public Component {
+class Animator : public Component
+{
 private:
     std::map<std::string, AnimationClip> clips;
     AnimationClip *currentClip = nullptr;
@@ -175,7 +190,8 @@ public:
     Component *Clone(GameObject *parent);
 };
 
-class Transform {
+class Transform
+{
 public:
     float rotation; // Only for the Z axis
     Vector2 position, scale;
@@ -183,7 +199,8 @@ public:
     Transform(Vector2 position, float rotation, Vector2 scale);
 };
 
-class GameObject {
+class GameObject
+{
 private:
     std::string name;
     std::vector<Component *> components;
@@ -210,9 +227,12 @@ public:
 };
 
 template <typename T>
-T *GameObject::GetComponent() {
-    for (auto &component : components) {
-        if (dynamic_cast<T *>(component)) {
+T *GameObject::GetComponent()
+{
+    for (auto &component : components)
+    {
+        if (dynamic_cast<T *>(component))
+        {
             return dynamic_cast<T *>(component);
         }
     }
@@ -220,7 +240,6 @@ T *GameObject::GetComponent() {
 }
 
 // More like a template for the GameObjectManager
-
 
 // Wrapper for all, including GameObjectManager
 // Singleton
@@ -269,6 +288,5 @@ public:
     void Update();
     void Draw();
 };
-
 
 #endif

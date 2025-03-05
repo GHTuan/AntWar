@@ -4,8 +4,10 @@
 #include "Vector2.hpp"
 
 #include <SDL2/SDL.h>
-#include <functional> // Hỗ trợ std::function<void()>
+#include <functional>
 #include <string>
+#include <set>
+#include <random>
 
 class Game
 {
@@ -56,4 +58,5 @@ private:
     SDL_Renderer *renderer;
 };
 
+int GetUniqueRandom(std::set<int> &usedValues, int minVal, int maxVal);
 #endif // GAME_HPP

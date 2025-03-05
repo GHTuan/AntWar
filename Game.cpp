@@ -76,34 +76,28 @@ void Game::menuSetup()
 {
     try
     {
-        // 🎮 Tạo menu chính
         Scene *menuScene = new Scene("MainMenu");
         menuScene->AssignLogic([menuScene, this]()
                                {
             Game::state = MENU;
             Sound::GetInstance()->PlayMusic("MenuBgm");
 
-            // 🏞️ Background
             CreateGameObject("Background", Vector2(640, 360), Vector2(1, 1), 
-                             "Assets/Sprites/UI/MenuBG.jpg", Vector2(2560, 1707), -10);
+                             "Assets/Sprites/UI/Menubg.jpg", Vector2(2560, 1707), -10);
 
-            // 🎬 Tiêu đề game
             GameObject *title = CreateGameObject("Title", Vector2(640, 200), Vector2(10, 10), 
                                                  "Assets/Sprites/UI/Game_Name.png", Vector2(64, 16), 0);
             title->AddComponent(new Animator(title, {AnimationClip("Idle", "Assets/Sprites/UI/Game_Name.png", Vector2(64, 16), 200, true, 1.0, 0, 1)}));
             title->GetComponent<Animator>()->Play("Idle");
 
-            // 🕹️ Nút chơi đơn
             CreateButton("PlayButton", Vector2(640, 400), Vector2(5, 5), 
                          "Assets/Sprites/UI/Play_button1p.png", 
                          [this]() { Game::state = GAME; Player2Mode = false; TestMode = false; });
 
-            // 🕹️ Nút chơi đôi
             CreateButton("PlayButtonMulti", Vector2(640, 550), Vector2(5, 5), 
                          "Assets/Sprites/UI/Play_Button2p.png", 
                          [this]() { Game::state = GAME; Player2Mode = true; TestMode = false; });
 
-            // 🔬 Chế độ test (nếu cần)
             if (false) {
                 CreateButton("TestButton", Vector2(1100, 700), Vector2(2, 2), 
                              "Assets/Sprites/UI/Play_button.png", 
@@ -111,7 +105,6 @@ void Game::menuSetup()
                              Vector2(32, 16));
             }
 
-            // ❌ Nút thoát (chỉ hiển thị nếu fullscreen)
             if (FULLSCREEN) {
                 CreateButton("QuitButton", Vector2(1248, 32), Vector2(2, 2), 
                              "Assets/Sprites/UI/Quit_button.png", 
@@ -130,30 +123,33 @@ void Game::menuSetup()
     }
 }
 
-void Game::gameOverSetup() {
-    try {
+void Game::gameOverSetup()
+{
+    try
+    {
         Scene *gameOverScene = new Scene("GameOver");
 
-        gameOverScene->AssignLogic([gameOverScene, this]() {
+        gameOverScene->AssignLogic([gameOverScene, this]()
+                                   {
             Sound::GetInstance()->StopMusic();
             Sound::GetInstance()->PlaySound("Game_Over");
 
-            // Tạo GameObject hiển thị "Game Over"
             CreateGameObject("GameOverText", Vector2(640, 200), Vector2(5, 5),
                              "Assets/Sprites/UI/GameOver.png", Vector2(128, 64), 1);
 
-            // Tạo nút "Menu" để quay lại menu chính
             CreateButton("MenuButton", Vector2(640, 600), Vector2(1.5, 1.5),
                          "Assets/Sprites/UI/menuButton.png",
                          [this]() { Game::state = MENU; scoreTeam1 = scoreTeam2 = 0; },
-                         Vector2(143, 48));
-        });
+                         Vector2(143, 48)); });
 
         SceneManager::GetInstance()->AddScene(gameOverScene);
-    } catch (const std::exception &e) {
+    }
+    catch (const std::exception &e)
+    {
         std::cerr << "Error in gameOverSetup: " << e.what() << std::endl;
     }
 }
+
 void Game::gameSetup()
 {
     Scene *gameScene = new Scene("Game");
@@ -161,37 +157,23 @@ void Game::gameSetup()
                            {
                                Game::state = GAME;
                                Sound::GetInstance()->PlayMusic("GameBgm");
+                               CreateGameObject("Background", Vector2(640, 360), Vector2(0.128, 0.0960128017068943),
+                                                "Assets/Sprites/yard.png", Vector2(10000, 7499), -10);
 
-#pragma region Background Setup
-                               GameObject *background = new GameObject("Background");
-                               background->transform.position = Vector2(640, 360);
-                               background->transform.scale = Vector2(0.128, 0.0960128017068943);
 
-                               background->AddComponent(new SpriteRenderer(background, Vector2(10000, 7499), -10, LoadSpriteSheet("Assets/Sprites/yard.png")));
 
-                               GameObjectManager::GetInstance()->AddGameObject(background);
-#pragma endregion
 
-#pragma region Ball Setup
-                               GameObject *ball = new GameObject("Ball");
+                               GameObject *ball = CreateGameObject("Ball", Vector2(640, 360), Vector2(1.5, 1.5),
+                                                                   "Assets/bomb.png", Vector2(25, 25), 10);
                                ball->tag = 3;
-                               ball->transform.position = Vector2(640, 360);
-                               ball->transform.scale = Vector2(1.5, 1.5);
 
-                               ball->AddComponent(new SpriteRenderer(ball, Vector2(15, 15), 10, LoadSpriteSheet("Assets/soccer_ball.png")));
-
-                               ball->AddComponent(new Animator(ball, {AnimationClip("Roll", "Assets/soccer_ball.png", Vector2(15, 15), 1000, true, 1.0, 0, 1)}));
+                               ball->AddComponent(new Animator(ball, {AnimationClip("Roll", "Assets/bomb.png", Vector2(25, 25), 1000, true, 1.0, 0, 1)}));
                                ball->GetComponent<Animator>()->Play("Roll");
-
                                ball->AddComponent(new Rigidbody2D(ball, 1, 0.025, .9));
-
                                ball->AddComponent(new VelocityToAnimSpeedController(ball, "Roll"));
                                ball->AddComponent(new StayInBounds(ball, false));
-
-                               ball->AddComponent(new CircleCollider2D(ball, Vector2(0, 0), 7.5));
-
+                               ball->AddComponent(new CircleCollider2D(ball, Vector2(0, 0), 5));
                                ball->AddComponent(new BallStateMachine(ball, 2.0, 700, 1000));
-
                                ball->GetComponent<CircleCollider2D>()->OnCollisionEnter.addHandler(
                                    [ball](Collider2D *collider)
                                    {
@@ -199,31 +181,30 @@ void Game::gameSetup()
                                    });
 
                                GameObjectManager::GetInstance()->AddGameObject(ball);
-#pragma endregion
 
-#pragma region Player setup
+
 
                                GameObject *player1 = new GameObject("Player1");
                                player1->transform.scale = Vector2(1.5, 1.5);
 
                                player1->AddComponent(new SpriteRenderer(player1, Vector2(31, 82), 0, LoadSpriteSheet("Assets/Sprites/ant.png")));
                                player1->AddComponent(new Rigidbody2D(player1, 1, 0.04, 0.5));
-                               player1->AddComponent(new CircleCollider2D(player1, Vector2(0, 0), 30 * player1->transform.scale.x));
+                               player1->AddComponent(new CircleCollider2D(player1, Vector2(0, 0), 25 * player1->transform.scale.x));
                                player1->AddComponent(new StayInBounds(player1, false));
                                player1->AddComponent(new RotateTowardVelocity(player1, Vector2(0, -1)));
                                player1->AddComponent(new VelocityToAnimSpeedController(player1, "Run"));
 
                                player1->transform.position = Vector2(200, HEIGHT / 2);
 
-                               GameObject *player2 = GameObject::Instantiate("Player2", player1, Vector2(300, HEIGHT / 2 + 80), 0, Vector2(1.5, 1.5));
-                               GameObject *player3 = GameObject::Instantiate("Player3", player1, Vector2(300, HEIGHT / 2 - 80), 0, Vector2(1.5, 1.5));
-                               GameObject *player4 = GameObject::Instantiate("Player4", player1, Vector2(500, HEIGHT / 2 + 150), 0, Vector2(1.5, 1.5));
-                               GameObject *player5 = GameObject::Instantiate("Player5", player1, Vector2(500, HEIGHT / 2 - 150), 0, Vector2(1.5, 1.5));
-
-                               GameObject *player6 = GameObject::Instantiate("Player6", player1, Vector2(WIDTH - 500, HEIGHT / 2 + 150), 0, Vector2(1.5, 1.5));
-                               GameObject *player7 = GameObject::Instantiate("Player7", player1, Vector2(WIDTH - 500, HEIGHT / 2 - 150), 0, Vector2(1.5, 1.5));
-                               GameObject *player8 = GameObject::Instantiate("Player8", player1, Vector2(WIDTH - 300, HEIGHT / 2 + 80), 0, Vector2(1.5, 1.5));
-                               GameObject *player9 = GameObject::Instantiate("Player9", player1, Vector2(WIDTH - 300, HEIGHT / 2 - 80), 0, Vector2(1.5, 1.5));
+                               std::set<int> usedPositions;
+                               GameObject *player2 = GameObject::Instantiate("Player2", player1, Vector2(GetUniqueRandom(usedPositions, 250, 320), HEIGHT / 2 + 80), 0, Vector2(1.5, 1.5));
+                               GameObject *player3 = GameObject::Instantiate("Player3", player1, Vector2(GetUniqueRandom(usedPositions, 250, 320), HEIGHT / 2 - 80), 0, Vector2(1.5, 1.5));
+                               GameObject *player4 = GameObject::Instantiate("Player4", player1, Vector2(GetUniqueRandom(usedPositions, 450, 520), HEIGHT / 2 + 150), 0, Vector2(1.5, 1.5));
+                               GameObject *player5 = GameObject::Instantiate("Player5", player1, Vector2(GetUniqueRandom(usedPositions, 450, 520), HEIGHT / 2 - 150), 0, Vector2(1.5, 1.5));
+                               GameObject *player6 = GameObject::Instantiate("Player6", player1, Vector2(WIDTH - GetUniqueRandom(usedPositions, 500, 580), HEIGHT / 2 + 150), 0, Vector2(1.5, 1.5));
+                               GameObject *player7 = GameObject::Instantiate("Player7", player1, Vector2(WIDTH - GetUniqueRandom(usedPositions, 500, 580), HEIGHT / 2 - 150), 0, Vector2(1.5, 1.5));
+                               GameObject *player8 = GameObject::Instantiate("Player8", player1, Vector2(WIDTH - GetUniqueRandom(usedPositions, 280, 320), HEIGHT / 2 + 80), 0, Vector2(1.5, 1.5));
+                               GameObject *player9 = GameObject::Instantiate("Player9", player1, Vector2(WIDTH - GetUniqueRandom(usedPositions, 280, 320), HEIGHT / 2 - 80), 0, Vector2(1.5, 1.5));
                                GameObject *player10 = GameObject::Instantiate("Player10", player1, Vector2(WIDTH - 200, HEIGHT / 2), 0, Vector2(1.5, 1.5));
 
                                player1->tag = player2->tag = player3->tag = player4->tag = player5->tag = 1;
@@ -297,15 +278,15 @@ void Game::gameSetup()
                                }
 
                                player1->AddComponent(new AIGoalKeeper(player1, ball, GoalKeeperSpeed, true));
-                               player2->AddComponent(new AIDefender(player2, ball, DefenderSpeed, true));
-                               player3->AddComponent(new AIDefender(player3, ball, DefenderSpeed, true));
-                               player4->AddComponent(new AIAttacker(player4, ball, AttackerSpeed, true));
-                               player5->AddComponent(new AIAttacker(player5, ball, AttackerSpeed, true));
+                               player2->AddComponent(new AIDefender(player2, ball, player7, player3, DefenderSpeed, true, false));
+                               player3->AddComponent(new AIDefender(player3, ball, player6, player4, DefenderSpeed, true, true));
+                               player4->AddComponent(new AIAttacker(player4, ball, player5, AttackerSpeed, true, false));
+                               player5->AddComponent(new AIAttacker(player5, ball, player4, AttackerSpeed, true, true));
 
-                               player6->AddComponent(new AIAttacker(player6, ball, AttackerSpeed, false));
-                               player7->AddComponent(new AIAttacker(player7, ball, AttackerSpeed, false));
-                               player8->AddComponent(new AIDefender(player8, ball, DefenderSpeed, false));
-                               player9->AddComponent(new AIDefender(player9, ball, DefenderSpeed, false));
+                               player6->AddComponent(new AIAttacker(player6, ball, player7, AttackerSpeed, false, true));
+                               player7->AddComponent(new AIAttacker(player7, ball, player6, AttackerSpeed, false, false));
+                               player8->AddComponent(new AIDefender(player8, ball, player5, player6, DefenderSpeed, false, true));
+                               player9->AddComponent(new AIDefender(player9, ball, player4, player7, DefenderSpeed, false, false));
                                player10->AddComponent(new AIGoalKeeper(player10, ball, GoalKeeperSpeed, false));
 
                                GameObject *controllerSwitcher1 = new GameObject("ControllerSwitcher1");
@@ -358,9 +339,8 @@ void Game::gameSetup()
                                    player9->GetComponent<Collider2D>()->enabled = false;
                                }
 
-#pragma endregion
 
-#pragma region Goal Setup
+
                                GameObject *goal1 = new GameObject("Goal1");
                                goal1->transform.position = Vector2(90, 360);
                                goal1->transform.scale = Vector2(1.5, 0.8);
@@ -368,7 +348,7 @@ void Game::gameSetup()
 
                                goal1->AddComponent(new SpriteRenderer(goal1, Vector2(72, 200), 0, LoadSpriteSheet("Assets/Sprites/goal0.png")));
                                goal1->AddComponent(new BoxCollider2D(goal1, Vector2(0, 0),
-                                                                     Vector2(72 * goal1->transform.scale.x, 176 * goal1->transform.scale.y)));
+                                                                     Vector2(42 * goal1->transform.scale.x, 186 * goal1->transform.scale.y)));
 
                                goal1->GetComponent<BoxCollider2D>()->OnCollisionEnter.addHandler(
                                    [goal1, this](Collider2D *collider)
@@ -379,7 +359,7 @@ void Game::gameSetup()
                                            if (goal1Col->GetNormal(collider->gameObject->transform.position) == Vector2(1, 0))
                                            {
                                                Sound::GetInstance()->PlaySound("Goal");
-                                               this->scoreTeam1++;
+                                               this->scoreTeam2++;
                                                SceneManager::GetInstance()->LoadScene("Game");
                                            }
                                            else
@@ -405,7 +385,7 @@ void Game::gameSetup()
 
                                goal2->AddComponent(new SpriteRenderer(goal2, Vector2(72, 200), 0, LoadSpriteSheet("Assets/Sprites/goal0.png")));
                                goal2->AddComponent(new BoxCollider2D(goal2, Vector2(0, 0),
-                                                                     Vector2(72 * goal2->transform.scale.x, 176 * goal2->transform.scale.y)));
+                                                                     Vector2(42 * goal2->transform.scale.x, 186 * goal2->transform.scale.y)));
 
                                goal2->GetComponent<BoxCollider2D>()->OnCollisionEnter.addHandler(
                                    [goal2, this](Collider2D *collider)
@@ -416,7 +396,7 @@ void Game::gameSetup()
                                            if (goal2Col->GetNormal(collider->gameObject->transform.position) == Vector2(-1, 0))
                                            {
                                                Sound::GetInstance()->PlaySound("Goal");
-                                               this->scoreTeam2++;
+                                               this->scoreTeam1++;
                                                SceneManager::GetInstance()->LoadScene("Game");
                                                return;
                                            }
@@ -433,10 +413,7 @@ void Game::gameSetup()
                                        }
                                    });
 
-                               GameObjectManager::GetInstance()->AddGameObject(goal2);
-
-#pragma endregion
-                           });
+                               GameObjectManager::GetInstance()->AddGameObject(goal2); });
 
     SceneManager::GetInstance()->AddScene(gameScene);
 }
@@ -446,14 +423,14 @@ void Game::objectInit()
 
     // Add sounds and music
     Sound::GetInstance();
-    Sound::GetInstance()->AddMusic("MenuBgm", "Assets/SFX/fairyfountain.mp3", 100);
-    Sound::GetInstance()->AddMusic("GameBgm", "Assets/SFX/papyrus.mp3", 32);
+    Sound::GetInstance()->AddMusic("MenuBgm", "Assets/SFX/Menu.mp3", 75);
+    Sound::GetInstance()->AddMusic("GameBgm", "Assets/SFX/BGM.mp3", 200);
 
-    Sound::GetInstance()->AddSound("ball_bounce", "Assets/SFX/ball_bounce.mp3", 128);
-    Sound::GetInstance()->AddSound("ball_kick", "Assets/SFX/ball_kick.mp3", 128);
+    Sound::GetInstance()->AddSound("ball_bounce", "Assets/SFX/ball_bounce.wav", 5);
+    Sound::GetInstance()->AddSound("ball_kick", "Assets/SFX/ball_kick.wav", 5);
 
-    Sound::GetInstance()->AddSound("Game_Over", "Assets/SFX/gameover.mp3", 128);
-    Sound::GetInstance()->AddSound("Goal", "Assets/SFX/score.mp3", 64);
+    Sound::GetInstance()->AddSound("Game_Over", "Assets/SFX/gameover.mp3", 60);
+    Sound::GetInstance()->AddSound("Goal", "Assets/SFX/score.wav", 100);
 
     std::cout << "Object Initialisation..." << std::endl;
 
@@ -488,7 +465,7 @@ void Game::handleEvents()
     }
 
     // End condition
-    if (scoreTeam1 + scoreTeam2 >= 5)
+    if (scoreTeam1 == 5  or scoreTeam2 == 5)
     {
         state = GAMEOVER;
         return;
@@ -622,4 +599,20 @@ void Game::CreateButton(const std::string &name, Vector2 position, Vector2 scale
     {
         std::cerr << "Error creating button " << name << ": " << e.what() << std::endl;
     }
+}
+
+int GetUniqueRandom(std::set<int> &usedValues, int minVal, int maxVal)
+{
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    std::uniform_int_distribution<int> dist(minVal, maxVal);
+
+    int value;
+    do
+    {
+        value = dist(gen);
+    } while (usedValues.find(value) != usedValues.end());
+
+    usedValues.insert(value);
+    return value;
 }
