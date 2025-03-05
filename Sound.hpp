@@ -5,7 +5,7 @@
 #include <map>
 #include <SDL2/SDL_mixer.h>
 
-class SoundManager {
+class Sound {
     private:
         std::map<std::string, Mix_Music *> music;
         std::map<std::string, Mix_Chunk *> sounds;
@@ -15,25 +15,22 @@ class SoundManager {
     
         std::string currentMusic;
     
-        SoundManager();
-        static SoundManager *instance;
+        Sound();
+        static Sound *instance;
     public:
-        ~SoundManager();
-        static SoundManager *GetInstance();
+        ~Sound();
+        static Sound *GetInstance();
     
-        void AddMusic(std::string name, std::string path, int volume);
-        void AddSound(std::string name, std::string path, int volume);
-    
-        void PlayMusic(std::string name, int loops = -1);
-        void PlaySound(std::string name, int loops = 0);
-    
+        void AddMusic(const std::string &name, const std::string &path, int volume);
+        void PlayMusic(const std::string &name, int loops = -1);
         void StopMusic();
-        void StopSound();
-    
         void PauseMusic();
-        void PauseSound();
-    
         void ResumeMusic();
+
+        void AddSound(const std::string &name, const std::string &path, int volume);
+        void PlaySound(const std::string &name, int loops = 0);
+        void StopSound();
+        void PauseSound();
         void ResumeSound();
     
     };

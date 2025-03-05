@@ -1,107 +1,127 @@
 #include "Sound.hpp"
 
-SoundManager *SoundManager::instance = nullptr;
+Sound *Sound::instance = nullptr;
 
-#pragma region SoundManager
+#pragma region Sound
 
-// SoundManager class implementation
-SoundManager::SoundManager() {
-    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) < 0) {
-        std::cerr << "SDL_mixer could not initialize! SDL_mixer Error: " << Mix_GetError() << std::endl;
+// Sound class implementation
+Sound::Sound() {
+    try {
+        if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) < 0) {
+            throw std::runtime_error(std::string("SDL_mixer could not initialize! Error: ") + Mix_GetError());
+        }
+    } catch (const std::exception &e) {
+        std::cerr << e.what() << std::endl;
     }
 }
 
-SoundManager::~SoundManager() {
-    for (auto &pair : music) {
-        Mix_FreeMusic(pair.second);
+Sound::~Sound() {
+    try {
+        for (auto &pair : music) {
+            Mix_FreeMusic(pair.second);
+        }
+        music.clear();
+
+        for (auto &pair : sounds) {
+            Mix_FreeChunk(pair.second);
+        }
+        sounds.clear();
+
+        Mix_Quit();
+        instance = nullptr;
+    } catch (const std::exception &e) {
+        std::cerr << "Error in Sound destructor: " << e.what() << std::endl;
     }
-    music.clear();
-
-    for (auto &pair : sounds) {
-        Mix_FreeChunk(pair.second);
-    }
-    sounds.clear();
-
-    Mix_Quit();
-
-    instance = nullptr;
 }
 
-SoundManager* SoundManager::GetInstance() {
+void Sound::AddMusic(const std::string &name, const std::string &path, int volume) {
+    try {
+        Mix_Music *newMusic = Mix_LoadMUS(path.c_str());
+        if (!newMusic) {
+            throw std::runtime_error(std::string("Failed to load music: ") + path + " Error: " + Mix_GetError());
+        }
+        music[name] = newMusic;
+        musicVolumes[name] = volume;
+    } catch (const std::exception &e) {
+        std::cerr << e.what() << std::endl;
+    }
+}
+
+void Sound::PlayMusic(const std::string &name, int loops) {
+    try {
+        auto it = music.find(name);
+        if (it == music.end()) {
+            throw std::runtime_error(std::string("Music not found: ") + name);
+        }
+        
+        if (currentMusic != name) {
+            currentMusic = name;
+            Mix_VolumeMusic(musicVolumes[name]);
+            if (Mix_PlayMusic(it->second, loops) < 0) {
+                throw std::runtime_error(std::string("Failed to play music: ") + name + " Error: " + Mix_GetError());
+            }
+        }
+    } catch (const std::exception &e) {
+        std::cerr << e.what() << std::endl;
+    }
+}
+
+void Sound::StopMusic() {
+    Mix_HaltMusic();
+}
+
+void Sound::PauseMusic() {
+    Mix_PauseMusic();
+}
+
+void Sound::ResumeMusic() {
+    Mix_ResumeMusic();
+}
+
+Sound* Sound::GetInstance() {
     if (instance == nullptr) {
-        instance = new SoundManager();
+        instance = new Sound();
     }
     return instance;
 }
 
-void SoundManager::AddMusic(std::string name, std::string path, int volume = 128) {
-    Mix_Music *newMusic = Mix_LoadMUS(path.c_str());
-    if (!newMusic) {
-        std::cerr << "Failed to load music: " << path << " SDL_mixer Error: " << Mix_GetError() << std::endl;
-        return;
+void Sound::AddSound(const std::string &name, const std::string &path, int volume) {
+    try {
+        Mix_Chunk *newSound = Mix_LoadWAV(path.c_str());
+        if (!newSound) {
+            throw std::runtime_error(std::string("Failed to load sound: ") + path + " Error: " + Mix_GetError());
+        }
+        sounds[name] = newSound;
+        soundVolumes[name] = volume;
+    } catch (const std::exception &e) {
+        std::cerr << e.what() << std::endl;
     }
-    music[name] = newMusic;
-    musicVolumes[name] = volume;
 }
 
-void SoundManager::AddSound(std::string name, std::string path, int volume = 128) {
-    Mix_Chunk *newSound = Mix_LoadWAV(path.c_str());
-    if (!newSound) {
-        std::cerr << "Failed to load sound: " << path << " SDL_mixer Error: " << Mix_GetError() << std::endl;
-        return;
-    }
-    sounds[name] = newSound;
-    soundVolumes[name] = volume;
-}
-
-void SoundManager::PlayMusic(std::string name, int loops) {
-    auto it = music.find(name);
-    if (it != music.end()) {
-        if (currentMusic == name) {
-            return;
+void Sound::PlaySound(const std::string &name, int loops) {
+    try {
+        auto it = sounds.find(name);
+        if (it == sounds.end()) {
+            throw std::runtime_error(std::string("Sound not found: ") + name);
         }
         
-        currentMusic = name;
-        Mix_VolumeMusic(musicVolumes[name]);
-        Mix_PlayMusic(it->second, loops);
-    } else {
-        std::cerr << "Music not found: " << name << std::endl;
-    }
-}
-
-void SoundManager::PlaySound(std::string name, int loops) {
-    auto it = sounds.find(name);
-    if (it != sounds.end()) {
-
         Mix_Volume(-1, soundVolumes[name]);
         Mix_PlayChannel(-1, it->second, loops);
-        
-    } else {
-        std::cerr << "Sound not found: " << name << std::endl;
+    } catch (const std::exception &e) {
+        std::cerr << e.what() << std::endl;
     }
 }
 
-void SoundManager::StopMusic() {
-    Mix_HaltMusic();
-}
 
-void SoundManager::StopSound() {
+void Sound::StopSound() {
     Mix_HaltChannel(-1);
 }
 
-void SoundManager::PauseMusic() {
-    Mix_PauseMusic();
-}
-
-void SoundManager::PauseSound() {
+void Sound::PauseSound() {
     Mix_Pause(-1);
 }
 
-void SoundManager::ResumeMusic() {
-    Mix_ResumeMusic();
-}
-
-void SoundManager::ResumeSound() {
+void Sound::ResumeSound() {
     Mix_Resume(-1);
 }
 

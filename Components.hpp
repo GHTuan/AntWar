@@ -64,7 +64,7 @@ public:
 
             // Bounce off anything else
             else {
-                SoundManager::GetInstance()->PlaySound("ball_bounce");
+                Sound::GetInstance()->PlaySound("ball_bounce");
                 rigidbody->BounceOff(other->GetNormal(gameObject->transform.position));
             }
         }
@@ -97,7 +97,7 @@ public:
 
     void Kick(Vector2 direction, float force, GameObject *kicker) {
         if (currentState == BINDED) {
-            SoundManager::GetInstance()->PlaySound("ball_kick");
+            Sound::GetInstance()->PlaySound("ball_kick");
             currentState = KICKED;
             rigidbody->AddForce(direction * force);
             lastKickedBy = kicker;

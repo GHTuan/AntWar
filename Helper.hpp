@@ -134,11 +134,20 @@ public:
     {
         Rigidbody2D *rigidbody = this->gameObject->GetComponent<Rigidbody2D>();
         bool bounced = false;
+
+        bool inGoalArea = (this->gameObject->transform.position.y > 320 && this->gameObject->transform.position.y < 400);
+
+        float goalMinX = MIN_WIDTH_YARD - 100;
+        float goalMaxX = MAX_WIDTH_YARD + 100;
+
         if (this->gameObject->transform.position.x < MIN_WIDTH_YARD)
         {
             if (teleport)
             {
                 this->gameObject->transform.position.x = MAX_WIDTH_YARD;
+            }
+            else if (inGoalArea && this->gameObject->transform.position.x >= goalMinX)
+            {
             }
             else
             {
@@ -151,11 +160,15 @@ public:
                     this->gameObject->transform.position.x = MIN_WIDTH_YARD;
             }
         }
+
         if (this->gameObject->transform.position.x > MAX_WIDTH_YARD)
         {
             if (teleport)
             {
                 this->gameObject->transform.position.x = MIN_WIDTH_YARD;
+            }
+            else if (inGoalArea && this->gameObject->transform.position.x <= goalMaxX)
+            {
             }
             else
             {
@@ -168,6 +181,7 @@ public:
                     this->gameObject->transform.position.x = MAX_WIDTH_YARD;
             }
         }
+
         if (this->gameObject->transform.position.y < MIN_HEIGHT_YARD)
         {
             if (teleport)
@@ -185,6 +199,8 @@ public:
                     this->gameObject->transform.position.y = MIN_HEIGHT_YARD;
             }
         }
+
+        // Biên dưới (MAX_HEIGHT_YARD)
         if (this->gameObject->transform.position.y > MAX_HEIGHT_YARD)
         {
             if (teleport)
@@ -202,9 +218,10 @@ public:
                     this->gameObject->transform.position.y = MAX_HEIGHT_YARD;
             }
         }
+
         if (bounced)
         {
-            SoundManager::GetInstance()->PlaySound("ball_bounce");
+            Sound::GetInstance()->PlaySound("ball_bounce");
         }
     }
 
