@@ -157,8 +157,8 @@ void Game::gameSetup()
                            {
                                Game::state = GAME;
                                Sound::GetInstance()->PlayMusic("GameBgm");
-                               CreateGameObject("Background", Vector2(640, 360), Vector2(0.128, 0.0960128017068943),
-                                                "Assets/Sprites/yard.png", Vector2(10000, 7499), -10);
+                               CreateGameObject("Background", Vector2(640, 360), Vector2(0.64, 0.48),
+                                                "Assets/Sprites/yard.jpg", Vector2(2000, 1500), -10);
 
 
 
@@ -343,13 +343,13 @@ void Game::gameSetup()
 
 
                                GameObject *goal1 = new GameObject("Goal1");
-                               goal1->transform.position = Vector2(90, 360);
-                               goal1->transform.scale = Vector2(1.5, 0.8);
+                               goal1->transform.position = Vector2(105, 360);
+                               goal1->transform.scale = Vector2(4, 4);
                                goal1->tag = 5;
 
-                               goal1->AddComponent(new SpriteRenderer(goal1, Vector2(72, 200), 0, LoadSpriteSheet("Assets/Sprites/goal0.png")));
+                               goal1->AddComponent(new SpriteRenderer(goal1, Vector2(16, 53), 0, LoadSpriteSheet("Assets/Sprites/goal1.png")));
                                goal1->AddComponent(new BoxCollider2D(goal1, Vector2(0, 0),
-                                                                     Vector2(42 * goal1->transform.scale.x, 186 * goal1->transform.scale.y)));
+                                                                     Vector2(10 * goal1->transform.scale.x, 45 * goal1->transform.scale.y)));
 
                                goal1->GetComponent<BoxCollider2D>()->OnCollisionEnter.addHandler(
                                    [goal1, this](Collider2D *collider)
@@ -379,14 +379,14 @@ void Game::gameSetup()
                                GameObjectManager::GetInstance()->AddGameObject(goal1);
 
                                GameObject *goal2 = new GameObject("Goal2");
-                               goal2->transform.position = Vector2(1190, 360);
+                               goal2->transform.position = Vector2(1175, 360);
                                goal2->transform.rotation = 180;
-                               goal2->transform.scale = Vector2(1.5, 0.8);
+                               goal2->transform.scale = Vector2(4, 4);
                                goal2->tag = 7;
 
-                               goal2->AddComponent(new SpriteRenderer(goal2, Vector2(72, 200), 0, LoadSpriteSheet("Assets/Sprites/goal0.png")));
+                               goal2->AddComponent(new SpriteRenderer(goal2, Vector2(16, 53), 0, LoadSpriteSheet("Assets/Sprites/goal1.png")));
                                goal2->AddComponent(new BoxCollider2D(goal2, Vector2(0, 0),
-                                                                     Vector2(42 * goal2->transform.scale.x, 186 * goal2->transform.scale.y)));
+                                                                     Vector2(10 * goal2->transform.scale.x, 45 * goal2->transform.scale.y)));
 
                                goal2->GetComponent<BoxCollider2D>()->OnCollisionEnter.addHandler(
                                    [goal2, this](Collider2D *collider)
@@ -505,7 +505,7 @@ void Game::render()
     // Show score
     if (state == GAME)
     {
-        SDL_Color textColor = {0, 0, 0, 255};
+        SDL_Color textColor = {255, 255, 255, 255};
         std::string scoreText = std::to_string(scoreTeam1) + " - " + std::to_string(scoreTeam2);
         SDL_Texture *scoreTexture = LoadFontTexture(scoreText, "Assets/Fonts/arial.ttf", textColor, 80);
         if (scoreTexture)

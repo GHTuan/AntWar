@@ -64,7 +64,7 @@ public:
 
             // Bounce off anything else
             else {
-                Sound::GetInstance()->PlaySound("ball_bounce");
+                // Sound::GetInstance()->PlaySound("ball_bounce");
                 rigidbody->BounceOff(other->GetNormal(gameObject->transform.position));
             }
         }

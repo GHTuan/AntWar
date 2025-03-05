@@ -135,7 +135,7 @@ public:
         Rigidbody2D *rigidbody = this->gameObject->GetComponent<Rigidbody2D>();
         bool bounced = false;
 
-        bool inGoalArea = (this->gameObject->transform.position.y > 290 && this->gameObject->transform.position.y < 430);
+        bool inGoalArea = (this->gameObject->transform.position.y > 270 && this->gameObject->transform.position.y < 450);
 
         float goalMinX = MIN_WIDTH_YARD - 100;
         float goalMaxX = MAX_WIDTH_YARD + 100;
