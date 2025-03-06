@@ -1,4 +1,4 @@
-#include "CustomClasses.hpp"
+#include "Object.hpp"
 #include "Global.hpp"
 #include "Physic2D.hpp"
 

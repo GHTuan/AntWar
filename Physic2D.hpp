@@ -1,7 +1,7 @@
 #ifndef PHYSIC2D_HPP
 #define PHYSIC2D_HPP
 
-#include "CustomClasses.hpp"
+#include "Object.hpp"
 #include "Global.hpp"
 #include "Vector2.hpp"
 

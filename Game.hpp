@@ -1,6 +1,6 @@
 #ifndef GAME_HPP
 #define GAME_HPP
-#include "CustomClasses.hpp"
+#include "Object.hpp"
 #include "Vector2.hpp"
 
 #include <SDL2/SDL.h>

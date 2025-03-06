@@ -1,9 +1,9 @@
 #ifndef COMPONENTS_HPP
 #define COMPONENTS_HPP
 
-#include "CustomClasses.hpp"
+#include "Object.hpp"
 #include "Game.hpp"
-#include "Helper.hpp"
+#include "Utils.hpp"
 #include "Physic2D.hpp"
 #include "Sound.hpp"
 

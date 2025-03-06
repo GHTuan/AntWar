@@ -1,13 +1,10 @@
-#ifndef CUSTOMCLASSES_HPP
-#define CUSTOMCLASSES_HPP
+#ifndef OBJECT_HPP
+#define OBJECT_HPP
 
 #include <iostream>
 
 #include <functional>
 #include <map>
-// #include <utility>
-// #include <vector>
-
 #include <SDL2/SDL.h>
 
 #include "Vector2.hpp"

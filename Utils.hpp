@@ -1,8 +1,8 @@
-#ifndef HELPER_HPP
-#define HELPER_HPP
+#ifndef UTILS_HPP
+#define UTILS_HPP
 
 #include "Global.hpp"
-#include "CustomClasses.hpp"
+#include "object.hpp"
 #include "Physic2D.hpp"
 #include "Sound.hpp"
 #include "Vector2.hpp"
@@ -285,4 +285,4 @@ void RenderTexture(SDL_Texture *texture, int x, int y)
     // Render the texture
     SDL_RenderCopy(RENDERER, texture, nullptr, &destRect);
 }
-#endif // HELPER_HPP
+#endif // UTILS_HPP
